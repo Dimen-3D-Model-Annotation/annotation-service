@@ -13,4 +13,4 @@
 
 6. `venv\Scripts\activate.bat`
 
-7. `pip install fastapi[all]`
+7. `pip install fastapi[all]` / `pip install -r requirements.txt`
