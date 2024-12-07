@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.db.models.annotation import Annotation
 from app.db.schemas.annotation import AnnotationCreate
+from app.db.schemas.annotation import AnnotationUpdate
 from app.db.session import get_db
 from fastapi import Depends, HTTPException
 from sqlalchemy.exc import SQLAlchemyError
@@ -72,17 +73,42 @@ async def get_annotations_by_scene_id(scene_id: int, db: AsyncSession = Depends(
 
 
 
-# async def delete_annotation_from_db(annotation_id: int, db: AsyncSession = Depends(get_db)):
-#     try:
-#         # Find the model by its ID
-#         annotation = db.query(Annotation).filter(Annotation.id == annotation_id).one()
+# Delete Annotation
+async def delete_annotation_from_db(annotation_id: int, db: AsyncSession = Depends(get_db)):
+    try:
+        # Fetch the annotation
+        stmt = select(Annotation).where(Annotation.id == annotation_id)
+        result = await db.execute(stmt)
+        annotation = result.scalars().first()
 
-#         # Delete the model
-#         db.delete(annotation)
-#         db.commit()
+        if annotation:
+            await db.delete(annotation)
+            await db.commit()
+            return {"message": "Annotation deleted successfully"}
+        else:
+            raise HTTPException(status_code=404, detail="Annotation not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-#         return {"message": f"Annotation with ID {annotation_id} has been deleted successfully."}
-#     except NoResultFound:
-#         from fastapi import HTTPException
-#         raise HTTPException(status_code=404, detail=f"Annotation with ID {annotation_id} not found.")
+
+
+# Update Annotation
+async def update_annotation_in_db(annotation_id: int, annotation_data: AnnotationUpdate, db: AsyncSession = Depends(get_db)):
+    try:
+        # Fetch the annotation
+        stmt = select(Annotation).where(Annotation.id == annotation_id)
+        result = await db.execute(stmt)
+        annotation = result.scalars().first()
+
+        if annotation:
+            # Update fields
+            annotation.annotation_text = annotation_data.annotation_text
+
+            await db.commit()
+            await db.refresh(annotation)
+            return annotation
+        else:
+            raise HTTPException(status_code=404, detail="Annotation not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 

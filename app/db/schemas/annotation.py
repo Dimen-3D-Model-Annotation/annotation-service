@@ -28,6 +28,13 @@ class AnnotationCreate(BaseModel):
         protected_namespaces = ()  # Disable namespace protection
         from_attributes = True
         
+        
+class AnnotationUpdate(BaseModel):
+    annotation_text: str
+    class Config:
+        protected_namespaces = ()  # Disable namespace protection
+        from_attributes = True
+        
     
         
 class AnnotationResponse(BaseModel):
