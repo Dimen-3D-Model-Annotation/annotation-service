@@ -1,19 +1,15 @@
 from pydantic import BaseModel
 
-class ModelCreate(BaseModel):
-    model_name: str
-    scene_id: int
-    file_path: str
+class SceneCreate(BaseModel):
+    scene_name: str
 
     class Config:
         protected_namespaces = ()  # Disable namespace protection
         from_attributes = True
         
-class ModelResponse(BaseModel):
+class SceneResponse(BaseModel):
     id: int
-    model_name: str
-    scene_id: int
-    file_path: str
+    scene_name: str
     
     class Config:
         protected_namespaces = ()  # Disable namespace protection
