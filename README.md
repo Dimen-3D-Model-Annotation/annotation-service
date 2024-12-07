@@ -16,6 +16,4 @@
 7. `pip install -r requirements.txt`
 
 8. To run the FastAPI app
-    `uvicorn app.main:app --reload`
-   If you want to run on another port other than default port 8000
-    `uvicorn app.main:app --reload --host 0.0.0.0 --port 8001`
+    `uvicorn app.main:app --reload --port 8005`
